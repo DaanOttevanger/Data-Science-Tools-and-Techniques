@@ -4,7 +4,7 @@ import numpy as np
 import altair as alt
 
 st.set_page_config(
-    page_title="Snack Bar Decision Support Dashboard",
+    page_title="Sales Decision Support Dashboard",
     layout="wide"
 )
 
@@ -496,7 +496,7 @@ def generate_management_insights(df, product_summary, category_summary, sales_by
 # --------------------------------------------------
 # APP TITLE
 # --------------------------------------------------
-st.title("Snack Bar Decision Support Dashboard")
+st.title("Sales Decision Support Dashboard")
 st.caption("Reusable template mode: companies can upload their own sales CSV and use the same decision engine.")
 
 with st.expander("How To Use This Dashboard", expanded=False):
