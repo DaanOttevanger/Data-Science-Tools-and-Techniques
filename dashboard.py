@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import altair as alt
 
 st.set_page_config(
     page_title="Snack Bar Decision Support Dashboard",
@@ -599,6 +600,7 @@ selected_products = st.sidebar.multiselect("Products", all_products, default=all
 filtered_df = filtered_df[filtered_df[product_col].isin(selected_products)]
 
 weekday_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
 selected_days = st.sidebar.multiselect("Weekdays", weekday_order, default=weekday_order)
 filtered_df = filtered_df[filtered_df["day_name"].isin(selected_days)]
 
@@ -688,7 +690,29 @@ with tab1:
 
     with left:
         st.markdown("### Revenue By Weekday")
-        st.bar_chart(sales_by_day)
+
+        weekday_chart_df = sales_by_day.reset_index()
+        weekday_chart_df.columns = ["day_name", "revenue"]
+
+        weekday_chart = alt.Chart(weekday_chart_df).mark_bar().encode(
+            x=alt.X(
+                "day_name:N",
+                sort=weekday_order,
+                title="Weekday"
+            ),
+            y=alt.Y(
+                "revenue:Q",
+                title="Revenue"
+            ),
+            tooltip=[
+                alt.Tooltip("day_name:N", title="Weekday"),
+                alt.Tooltip("revenue:Q", title="Revenue", format=",.2f")
+            ]
+        ).properties(
+            height=400
+        )
+
+        st.altair_chart(weekday_chart, use_container_width=True)
 
         st.markdown("### Revenue Over Time")
         st.line_chart(sales_over_time)
