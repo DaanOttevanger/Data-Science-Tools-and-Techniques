@@ -12,15 +12,15 @@ Place these files together in the same project folder:
 - `sales.csv`
 
 **Important:** the project needs the file `sales.csv` to run if you do not upload another dataset manually in the dashboard.  
-So make sure `sales.csv` is present in the same folder as `dashboard.py`.
+So make sure `sales.csv` is present in the same folder as `dashboard.py` or download it so you can enter it manually.
 
 ## Step 3 — Install the required packages
 Open your terminal (or Command Prompt / PowerShell on Windows) in the project folder and run: ##If pip does not work, try:
 
-py -m streamlit run dashboard.py
+`py -m streamlit run dashboard.py`
 
 If that doesn't work try:
 
-python -m streamlit run dashboard.py
+`python -m streamlit run dashboard.py`
 
 
