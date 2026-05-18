@@ -1,7 +1,7 @@
 ## ▶️ How to run
 
 ### Step 1 — Install Python
-Make sure Python 3.9 or higher is installed:
+Make sure Python 3.10 or higher is installed:
 https://www.python.org/downloads/
 
 ### Step 2 — Install Streamlit
