@@ -1,26 +1,13 @@
-# How to run
+▶️ How to run
+Step 1 — Install Python
+Make sure Python 3.10 or higher is installed: https://www.python.org/downloads/
 
-## Step 1 — Install Python
-Make sure Python 3.10 or higher is installed.  
+Step 2 — Install Streamlit
+Open your terminal (or Command Prompt on Windows) and run:`py -m streamlit run dashboard.py`
 
-## Step 2 — Make sure the project files are in one folder
-Place these files together in the same project folder:
+pip install streamlit
+Step 3 — Run the app
+Navigate to the folder where you saved linklogistics_app.py and run:
 
-- `dashboard.py`
-- `requirements.txt`
-- `README.md`
-- `sales.csv`
-
-**Important:** the project needs the file `sales.csv` to run if you do not upload another dataset manually in the dashboard.  
-So make sure `sales.csv` is present in the same folder as `dashboard.py` or download it so you can enter it manually.
-
-## Step 3 — Install the required packages
-Open your terminal (or Command Prompt / PowerShell on Windows) in the project folder and run: If pip does not work, try:
-
-`py -m streamlit run dashboard.py`
-
-If that doesn't work try:
-
-`python -m streamlit run dashboard.py`
-
-
+streamlit run linklogistics_app.py
+Your browser will automatically open at: http://localhost:8501
