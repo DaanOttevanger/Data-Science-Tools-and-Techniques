@@ -1,4 +1,4 @@
-# ▶️ How to run
+# How to run
 
 ## Step 1 — Install Python
 Make sure Python 3.10 or higher is installed.  
@@ -22,3 +22,20 @@ py -m streamlit run dashboard.py
 If that doesn't work try:
 
 python -m streamlit run dashboard.py
+
+Required project files
+
+The project should contain the following files:
+
+dashboard.py → the main Streamlit dashboard
+requirements.txt → the required Python packages
+README.md → explanation of the project and how to run it
+sales.csv → the dataset used by the dashboard
+Important note about the dataset
+
+The file sales.csv is required if no other CSV file is uploaded manually in the dashboard.
+
+That means:
+
+if you want the dashboard to start immediately, include sales.csv in the same folder
+if sales.csv is missing, the user must upload a CSV file manually
