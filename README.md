@@ -19,7 +19,6 @@ Open your terminal (or Command Prompt / PowerShell on Windows) in the project fo
 
 py -m streamlit run dashboard.py
 
-Or
+If that doesn't work try:
 
-py -m pip install -r requirements.txt
-
+python -m streamlit run dashboard.py
