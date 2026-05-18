@@ -17,10 +17,9 @@ So make sure `sales.csv` is present in the same folder as `dashboard.py`.
 ## Step 3 — Install the required packages
 Open your terminal (or Command Prompt / PowerShell on Windows) in the project folder and run: ##If pip does not work, try:
 
+py -m streamlit run dashboard.py
 
-'pip install -r requirements.txt'
+Or
 
-##If pip does not work, try:
-
-'py -m pip install -r requirements.txt'
+py -m pip install -r requirements.txt
 
