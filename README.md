@@ -12,7 +12,7 @@ pip install streamlit
 ```
 
 ### Step 3 — Run the app
-Navigate to the folder where you saved `linklogistics_app.py` and run:
+Navigate to the folder where you saved `dashboard.py` and run:
 
 ```
 py -m streamlit run dashboard.py 
