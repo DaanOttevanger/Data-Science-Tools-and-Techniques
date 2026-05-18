@@ -22,7 +22,7 @@ Your browser will automatically open at: http://localhost:8501
 
 ---
 
-## 📁 Files
+## 📁 Required Files
 - dashboard.py → the main Streamlit dashboard
 - requirements.txt → the required Python packages
 - README.md → explanation of the project and how to run it
