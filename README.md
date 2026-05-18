@@ -20,6 +20,6 @@ Open your terminal (or Command Prompt / PowerShell on Windows) in the project fo
 ```bash
 pip install -r requirements.txt
 
-If pip does not work, try:
+##If pip does not work, try:
 
 py -m pip install -r requirements.txt
