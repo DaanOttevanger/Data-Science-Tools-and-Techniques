@@ -34,4 +34,4 @@ The dashboard uses sales.csv as the default dataset.
 That means:
 
 - if sales.csv is in the same folder as dashboard.py, the dashboard can start immediately
-- if sales.csv is missing, the user must upload another CSV file manually inside the dashboard
+- if sales.csv is missing, the user must upload the CSV file manually inside the dashboard
