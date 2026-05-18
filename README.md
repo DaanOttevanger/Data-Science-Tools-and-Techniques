@@ -15,11 +15,12 @@ Place these files together in the same project folder:
 So make sure `sales.csv` is present in the same folder as `dashboard.py`.
 
 ## Step 3 — Install the required packages
-Open your terminal (or Command Prompt / PowerShell on Windows) in the project folder and run:
+Open your terminal (or Command Prompt / PowerShell on Windows) in the project folder and run: ##If pip does not work, try:
 
-```bash
-pip install -r requirements.txt
+
+'pip install -r requirements.txt'
 
 ##If pip does not work, try:
 
-py -m pip install -r requirements.txt
+'py -m pip install -r requirements.txt'
+
