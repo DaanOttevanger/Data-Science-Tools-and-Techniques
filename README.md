@@ -2,7 +2,6 @@
 
 ## Step 1 — Install Python
 Make sure Python 3.10 or higher is installed.  
-Download Python here: https://www.python.org/downloads/
 
 ## Step 2 — Make sure the project files are in one folder
 Place these files together in the same project folder:
