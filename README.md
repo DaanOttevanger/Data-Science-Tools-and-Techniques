@@ -27,3 +27,11 @@ Your browser will automatically open at: http://localhost:8501
 - requirements.txt → the required Python packages
 - README.md → explanation of the project and how to run it
 - sales.csv → the dataset used by the dashboard
+
+## Important note about sales.csv
+
+The dashboard uses sales.csv as the default dataset.
+That means:
+
+- if sales.csv is in the same folder as dashboard.py, the dashboard can start immediately
+- if sales.csv is missing, the user must upload another CSV file manually inside the dashboard
