@@ -23,7 +23,7 @@ If that doesn't work try:
 
 python -m streamlit run dashboard.py
 
-Required project files
+## Required project files
 
 The project should contain the following files:
 
