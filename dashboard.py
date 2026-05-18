@@ -1,16 +1,79 @@
+# Sales Decision Support Dashboard
+#
+# For this individual project, I developed a dynamic dashboard that helps businesses
+# make decisions based on sales data.
+#
+# At the start of the project, I first thought about building the dashboard for a
+# snack bar or small canteen. Later, I decided to broaden the concept because the
+# dataset I used looked more like a general retail or store dataset. That made the
+# dashboard more flexible and gave me more possibilities.
+#
+# The goal of the dashboard is not only to visualize sales data, but also to translate
+# that data into practical business actions.
+#
+# The dashboard focuses on:
+# - understanding sales performance,
+# - identifying strong and weak products,
+# - supporting operational decisions for today,
+# - supporting planning decisions for next week,
+# - and suggesting business actions based on the data.
+
+# Why I chose this project
+#
+# I chose this project because I wanted to build something practical and interactive.
+# I did not want to make a project that only contained static analysis or a few graphs.
+# Instead, I wanted to create something that feels more like a real business tool.
+#
+# This project combines several important parts of data-driven decision making:
+# - data cleaning,
+# - data analysis,
+# - visualization,
+# - business interpretation,
+# - and application development.
+
+# Inspiration from the selected videos
+#
+# The most important videos for me were:
+# - AI Python for Beginners
+# - Effortless Data Analysis and Cleaning with Data Wrangler in VS Code
+# - Become a Data Storyteller with Streamlit
+#
+# The Python video helped me with the technical foundation.
+# The Data Wrangler video was useful because data cleaning turned out to be a major part
+# of the project.
+# The Streamlit video inspired me to turn the analysis into an actual dashboard.
+
+# Method and approach
+#
+# I worked in a way that is similar to CRISP-DM:
+# 1. understand the business problem,
+# 2. explore the dataset,
+# 3. prepare the data,
+# 4. build the analysis and dashboard,
+# 5. improve the layout and decision support features.
+#
+# I built the dashboard step by step. I started with simple analysis and later added:
+# - dynamic filters,
+# - forecasts,
+# - scenario planning,
+# - ABC analysis,
+# - product portfolio analysis,
+# - and stock suggestions.
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 import altair as alt
+
+# Layout and styling
+#
+# I added simple styling to improve readability and make the dashboard look more professional.
 
 st.set_page_config(
     page_title="Sales Decision Support Dashboard",
     layout="wide"
 )
 
-# --------------------------------------------------
-# STYLING
-# --------------------------------------------------
 st.markdown("""
 <style>
 .block-container {
@@ -30,10 +93,14 @@ h1, h2, h3 {
 </style>
 """, unsafe_allow_html=True)
 
-# --------------------------------------------------
-# HELPER FUNCTIONS
-# --------------------------------------------------
+# Helper functions
+#
+# To keep the code structured and readable, I created multiple helper functions.
+# These functions make the dashboard easier to maintain and make it clearer why certain
+# steps were taken.
+
 def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    # Standardize column names so the dashboard can work more easily with different datasets.
     df = df.copy()
     df.columns = (
         df.columns.astype(str)
@@ -47,20 +114,24 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def pretty_label(text):
+    # Convert technical labels such as product_line into Product Line.
     return str(text).replace("_", " ").title()
 
 
 def prettify_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    # Apply cleaner labels to dataframes shown in the dashboard.
     return df.rename(columns=lambda x: pretty_label(x))
 
 
 def make_ranked(df: pd.DataFrame) -> pd.DataFrame:
+    # Add a rank column so tables start at 1 instead of 0.
     ranked = df.reset_index(drop=True).copy()
     ranked.insert(0, "Rank", range(1, len(ranked) + 1))
     return ranked
 
 
 def detect_columns(df: pd.DataFrame):
+    # Detect useful columns automatically so the dashboard becomes more reusable.
     cols = df.columns.tolist()
 
     date_candidates = ["date", "transaction_date", "order_date", "invoice_date"]
@@ -89,6 +160,7 @@ def detect_columns(df: pd.DataFrame):
 
 
 def build_template_csv():
+    # Create an example template file so another user can understand what input is expected.
     template_df = pd.DataFrame({
         "date": ["2026-05-01", "2026-05-01", "2026-05-02"],
         "time": ["12:00", "13:15", "17:30"],
@@ -102,6 +174,7 @@ def build_template_csv():
 
 
 def manual_column_mapper(df: pd.DataFrame, auto_map: dict):
+    # Manual fallback in case automatic detection is not correct.
     st.sidebar.markdown("### Manual Column Mapping")
     st.sidebar.caption("Use this if automatic detection is incorrect.")
 
@@ -130,6 +203,7 @@ def manual_column_mapper(df: pd.DataFrame, auto_map: dict):
 
 
 def prepare_data_auto(df: pd.DataFrame):
+    # Automatically prepare the dataset.
     df = normalize_columns(df)
     detected = detect_columns(df)
 
@@ -190,6 +264,7 @@ def prepare_data_auto(df: pd.DataFrame):
 
 
 def prepare_data_manual(df: pd.DataFrame, mapping: dict):
+    # Manual version of the data preparation.
     df = normalize_columns(df)
 
     date_col = mapping["date_col"]
@@ -248,6 +323,7 @@ def fmt_currency(x):
 
 
 def compute_product_summary(df, product_col, revenue_col, quantity_col):
+    # Build the product performance summary.
     return (
         df.groupby(product_col)
         .agg(
@@ -262,6 +338,7 @@ def compute_product_summary(df, product_col, revenue_col, quantity_col):
 
 
 def compute_category_summary(df, category_col, revenue_col, quantity_col):
+    # Build category-level summaries when category data is available.
     if category_col is None:
         return None
     return (
@@ -276,6 +353,7 @@ def compute_category_summary(df, category_col, revenue_col, quantity_col):
 
 
 def create_daily_product_demand(df, product_col, quantity_col):
+    # Calculate product demand per day.
     return (
         df.groupby(["date_only", "day_name", product_col])[quantity_col]
         .sum()
@@ -284,6 +362,7 @@ def create_daily_product_demand(df, product_col, quantity_col):
 
 
 def create_next_week_forecast(df, product_col, quantity_col):
+    # Create a simple next-week forecast based on average historical weekday demand.
     daily = create_daily_product_demand(df, product_col, quantity_col)
 
     weekday_avg = (
@@ -292,11 +371,11 @@ def create_next_week_forecast(df, product_col, quantity_col):
         .reset_index(name="expected_qty")
     )
 
-    weekday_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    weekday_order_local = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     forecast_table = (
         weekday_avg.pivot(index=product_col, columns="day_name", values="expected_qty")
-        .reindex(columns=weekday_order)
+        .reindex(columns=weekday_order_local)
         .fillna(0)
     )
 
@@ -307,11 +386,12 @@ def create_next_week_forecast(df, product_col, quantity_col):
 
 
 def create_weekday_product_matrix(weekday_avg: pd.DataFrame, product_col: str) -> pd.DataFrame:
-    weekday_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    # Show the weekday forecast as a cleaner matrix.
+    weekday_order_local = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     matrix = (
         weekday_avg.pivot(index=product_col, columns="day_name", values="expected_qty")
-        .reindex(columns=weekday_order)
+        .reindex(columns=weekday_order_local)
         .fillna(0)
         .round(1)
         .reset_index()
@@ -321,6 +401,7 @@ def create_weekday_product_matrix(weekday_avg: pd.DataFrame, product_col: str) -
 
 
 def create_today_hourly_profile(df, product_col, quantity_col):
+    # Analyze hourly demand if time data is available.
     if "hour" not in df.columns or df["hour"].isna().all():
         return None, None
 
@@ -341,6 +422,7 @@ def create_today_hourly_profile(df, product_col, quantity_col):
 
 
 def compute_abc_analysis(product_summary: pd.DataFrame) -> pd.DataFrame:
+    # Build ABC analysis based on cumulative revenue share.
     abc = product_summary.reset_index().copy()
     abc = abc.sort_values("total_revenue", ascending=False).reset_index(drop=True)
 
@@ -359,6 +441,7 @@ def compute_abc_analysis(product_summary: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_product_portfolio(product_summary: pd.DataFrame) -> pd.DataFrame:
+    # Classify products into strategic groups.
     portfolio = product_summary.reset_index().copy()
 
     qty_mean = portfolio["total_quantity"].mean()
@@ -381,6 +464,7 @@ def compute_product_portfolio(product_summary: pd.DataFrame) -> pd.DataFrame:
 
 
 def calculate_stock_status(action_table: pd.DataFrame) -> pd.DataFrame:
+    # Translate recommendation logic into a traffic-light style stock status.
     status_df = action_table.copy()
 
     stock_status = []
@@ -403,6 +487,7 @@ def calculate_stock_status(action_table: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_action_table(df, product_summary, forecast_table, product_col, revenue_col, quantity_col):
+    # Build the recommendation table.
     max_date = pd.to_datetime(df["date_only"]).max()
     min_cutoff = max_date - pd.Timedelta(days=6)
 
@@ -466,10 +551,11 @@ def build_action_table(df, product_summary, forecast_table, product_col, revenue
 
 
 def generate_management_insights(df, product_summary, category_summary, sales_by_day, total_hourly):
+    # Generate short business-style insights.
     insights = []
 
     best_product = product_summary["total_quantity"].idxmax()
-    worst_product = product_summary["total_quantity"].idxmin()
+    worst_product = product_summary.sort_values("total_quantity", ascending=True).index[0]
     best_day = sales_by_day.idxmax()
     worst_day = sales_by_day.idxmin()
 
@@ -492,10 +578,10 @@ def generate_management_insights(df, product_summary, category_summary, sales_by
 
     return insights
 
+# Title and instructions
+#
+# I included a short explanation and a template file so the dashboard is easier to use and reuse.
 
-# --------------------------------------------------
-# APP TITLE
-# --------------------------------------------------
 st.title("Sales Decision Support Dashboard")
 st.caption("Reusable template mode: companies can upload their own sales CSV and use the same decision engine.")
 
@@ -524,9 +610,11 @@ st.download_button(
     mime="text/csv"
 )
 
-# --------------------------------------------------
-# FILE INPUT
-# --------------------------------------------------
+# Data input
+#
+# File upload makes the dashboard reusable.
+# If no file is uploaded, the dashboard can use a local CSV file for testing.
+
 st.sidebar.header("Data Input")
 
 uploaded_file = st.sidebar.file_uploader("Upload Company CSV File", type=["csv"])
@@ -565,9 +653,11 @@ category_col = detected["category_col"]
 quantity_col = detected["quantity_col"]
 revenue_col = detected["revenue_col"]
 
-# --------------------------------------------------
-# FILTERS
-# --------------------------------------------------
+# Filters and scenario planning
+#
+# The filters make the dashboard dynamic.
+# The scenario slider helps estimate a busier or quieter next week.
+
 st.sidebar.header("Filters")
 
 min_date = pd.to_datetime(df[date_col]).min().date()
@@ -614,9 +704,10 @@ if filtered_df.empty:
     st.warning("No data is left after filtering.")
     st.stop()
 
-# --------------------------------------------------
-# KPI SECTION
-# --------------------------------------------------
+# KPI section
+#
+# I placed the KPI cards near the top so the user first gets a quick overall view.
+
 st.subheader("Dashboard Overview")
 
 total_revenue = filtered_df[revenue_col].sum()
@@ -632,9 +723,10 @@ c3.metric("Transactions", f"{total_transactions:,}")
 c4.metric("Avg Transaction Value", fmt_currency(avg_transaction_value))
 c5.metric("Avg Quantity / Transaction", f"{avg_quantity_per_transaction:.2f}")
 
-# --------------------------------------------------
-# CORE SUMMARIES
-# --------------------------------------------------
+# Core calculations
+#
+# These summaries are used across the whole dashboard.
+
 product_summary = compute_product_summary(filtered_df, product_col, revenue_col, quantity_col)
 category_summary = compute_category_summary(filtered_df, category_col, revenue_col, quantity_col)
 
@@ -671,9 +763,11 @@ management_insights = generate_management_insights(filtered_df, product_summary,
 abc_analysis = compute_abc_analysis(product_summary)
 portfolio_analysis = compute_product_portfolio(product_summary)
 
-# --------------------------------------------------
-# TABS
-# --------------------------------------------------
+# Dashboard tabs
+#
+# I divided the dashboard into multiple tabs so the user moves from general understanding
+# to more specific decision support.
+
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Dashboard Overview",
     "Product Performance",
@@ -695,22 +789,13 @@ with tab1:
         weekday_chart_df.columns = ["day_name", "revenue"]
 
         weekday_chart = alt.Chart(weekday_chart_df).mark_bar().encode(
-            x=alt.X(
-                "day_name:N",
-                sort=weekday_order,
-                title="Weekday"
-            ),
-            y=alt.Y(
-                "revenue:Q",
-                title="Revenue"
-            ),
+            x=alt.X("day_name:N", sort=weekday_order, title="Weekday"),
+            y=alt.Y("revenue:Q", title="Revenue"),
             tooltip=[
                 alt.Tooltip("day_name:N", title="Weekday"),
                 alt.Tooltip("revenue:Q", title="Revenue", format=",.2f")
             ]
-        ).properties(
-            height=400
-        )
+        ).properties(height=400)
 
         st.altair_chart(weekday_chart, use_container_width=True)
 
@@ -742,17 +827,21 @@ with tab2:
         hide_index=True
     )
 
+    # Correct logic:
+    # Strongest products are based on the highest total quantity.
+    # Weakest products are based on the lowest total quantity.
+    strongest_products = product_summary.sort_values("total_quantity", ascending=False).head(5).reset_index()
+    weakest_products = product_summary.sort_values("total_quantity", ascending=True).head(5).reset_index()
+
     col_a, col_b = st.columns(2)
 
     with col_a:
         st.markdown("### Top 5 Strongest Products")
-        strongest_5 = prettify_dataframe(product_summary.head(5).reset_index())
-        st.table(make_ranked(strongest_5))
+        st.table(make_ranked(prettify_dataframe(strongest_products)))
 
     with col_b:
         st.markdown("### Top 5 Weakest Products")
-        weakest_5 = prettify_dataframe(product_summary.tail(5).reset_index())
-        st.table(make_ranked(weakest_5))
+        st.table(make_ranked(prettify_dataframe(weakest_products)))
 
     top5_revenue_share = (product_summary["total_revenue"].head(5).sum() / product_summary["total_revenue"].sum()) * 100
     st.info(f"The top 5 products generate **{top5_revenue_share:.1f}%** of total revenue in the filtered data.")
@@ -914,7 +1003,7 @@ with tab5:
     st.markdown("### Management Summary")
 
     best_product = product_summary.index[0]
-    weakest_product = product_summary.index[-1]
+    weakest_product = product_summary.sort_values("total_quantity", ascending=True).index[0]
     best_day = sales_by_day.idxmax()
     weakest_day = sales_by_day.idxmin()
 
@@ -971,3 +1060,16 @@ with tab6:
         st.warning("No time column detected. Hourly planning features are disabled.")
     if category_col is None:
         st.info("No category column detected. Category analysis is limited.")
+
+# Final reflection in the code
+#
+# Looking back at the code, I think the strongest point is that the dashboard does more
+# than simply visualize data. It also interprets the data and translates it into possible actions.
+#
+# Another strong point is the reusable setup. By adding file upload, automatic column detection,
+# manual mapping, and a template CSV, I made the dashboard more flexible than one built only
+# for a single file.
+#
+# I also spent time improving the layout and readability. The final dashboard became stronger
+# not only because of the calculations, but also because of the way the information is structured
+# and presented.
